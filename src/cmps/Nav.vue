@@ -14,7 +14,7 @@
     <ul class="navbar-nav mr-auto" v-else>
         <MenuLink path="/" text="Home"></MenuLink>
         <li class="nav-item ">
-        <a class="nav-link" @click.prevent="logout()">Logout</a>
+        <a class="nav-link" href="#" @click.prevent="logout()">Logout</a>
       </li>
         
     </ul>
@@ -38,7 +38,7 @@ export default {
     },
     methods:{
         logout(){
-            console.log("Logged Out")
+            this.$store.dispatch("logout");
         }
 
     }

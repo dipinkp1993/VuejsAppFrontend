@@ -1,7 +1,7 @@
 <template>
 
   <div id="app">
-    <app-nav></app-nav>
+    <app-nav :loggedIn="loggedIn"></app-nav>
    <div class="container">
    <router-view></router-view>
    </div>
@@ -14,17 +14,38 @@
 //import HelloWorld from './components/HelloWorld.vue'
 import Nav from "./cmps/Nav"
 export default {
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loginState;
+    }
+  },
   name: 'App',
   components: {
    appNav:Nav
+  },
+  created() {
+    const expires = localStorage.getItem("expires");
+    const token = localStorage.getItem("token");
+    if (expires && token) {
+      var expiresMs = new Date(expires);
+      var now = new Date();
+      now = now.getTime();
+      expiresMs = expiresMs.getTime();
+      if (now > expiresMs) {
+        this.$store.dispatch("logout");
+      } else {
+        this.$store.dispatch("login", expiresMs - now);
+      }
+    } else {
+      if (this.$router.currentRoute.name !== "Signin")
+        this.$router.push({ name: "Signin" });
+    }
   }
 }
 </script>
 
-<style scoped>
-#bdy{
-  background-color: #e1e1e1;
-}
+<style>
+
 .form-wrapper{
   border-radius: 7px;
   background-color: #e1e1e1;
