@@ -35,7 +35,7 @@
                 type="file"
                 @change="updatePreview($event)"
                 ref="featured_image"
-                class="form-control-file"
+                class="form-control-file" id="avatar"
               />
             </div>
           </div>
@@ -96,9 +96,30 @@ export default {
   },
   methods:{
     save(){
+       if (this.post_id) {
+        this.update();
+      } else {
+        this.create();
+      }
 
     },
     create(){
+      const form = new FormData();
+      form.append("title", this.title);
+      form.append("description", this.content);
+      form.append("featured_image", this.$refs.featured_image.files[0]);
+      this.$api
+        .post("/blog", form)
+        .then(res => {
+          this.msg = "Post has been created";
+          this.classAlert = "success";
+          this.posts.unshift(res.data);
+          this.cancel(true);
+        })
+        .catch(err => {
+          this.msg = err.response.data.messages.error;
+          this.classAlert = "danger";
+        });
 
     },
     update(){
@@ -124,18 +145,22 @@ export default {
 
     },
     updatePreview(event){
-      console.log(event);
+     const file = event.target.files[0];
+     this.image = URL.createObjectURL(file);
 
     },
-     cancel() {
+     cancel(alertShow=false) {
       this.post_index = null;
       this.post_id = null;
       this.title = "";
       this.content = "";
       this.image = "";
+      document.getElementById("avatar").value='';
     
+     if (!alertShow) {
         this.msg = null;
         this.classAlert = null;
+      }
      
     }
   },
