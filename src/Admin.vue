@@ -82,7 +82,7 @@ export default {
     title: "",
     content: "",
     image: "",
-    imgPlaceholder: "http://via.placeholder.com/300"
+    imgPlaceholder: "https://via.placeholder.com/300"
     }
 
   },
